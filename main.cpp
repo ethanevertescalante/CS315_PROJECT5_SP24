@@ -1,9 +1,11 @@
 #include<curses.h>
 #include<iostream>
 #include "getChar.hpp"
+#include "ScreenDS.hpp"
 
 void startup( void );
 void terminate( void );
+void drawPlayArea( int row, int col );
 
 int main(int argc, const char *argv[])
 {
@@ -25,8 +27,8 @@ int main(int argc, const char *argv[])
   //              when you use this function to refresh the screen.
 
     if( argc != 3 ) {
-        std::cout << "usage: " << argv[0] << " numRow(9-25) numCol(9-80) ";
-        exit(1);
+      std::cout << "usage: " << argv[0] << " numRow(9-25) numCol(9-80) ";
+      exit(1);
     }
 
     //Checking Arguments Before Moving On
@@ -40,57 +42,48 @@ int main(int argc, const char *argv[])
     }
 
     if(col < 9 || col > 80){
-        argumentError = true;
-        std::cout << "Second Argument: Please Enter a Number between 9 and 80\n";
+      argumentError = true;
+      std::cout << "Second Argument: Please Enter a Number between 9 and 80\n";
     }
 
     if(argumentError){
-        exit(2);
+      exit(2);
     }
 
 
+    ScreenDS SDS;
+    startup();
 
+    move(0,0);
+    addstr("Ethan Snake Game CS315 SP24");
 
-     startup();
+    move(1, 0);
+    addstr("Score: ");
+    drawPlayArea(row, col);
 
+    for (int i = 1; i < 5; i++) {
+        getChar();
+        refresh();
+    }
 
-    move(1, 0);  // move the cursor to the top- and left-most block.
-    addstr("0123456789012345678901234567890123456789");
-    addstr("0123456789012345678901234567890123456789");
-
-    move(1, 0);  // move the cursor to the second row, first column.
-    addch('*');  // put a character at (1, 0)
-
-
-
-
-
-     move(1, 20);
-     addstr( "This string starts on column 21.");
-
-     mvaddch(1, 79, '*'); // same as: move(1, 79); addch('*');
-
-     mvaddch(22, 0, '*');
-
-     move(12, 30);
-     addstr( "ooooooo@");
-
-     mvaddch(22, 79, '*');
-     refresh();  // this function call forces the screen to be updated.
-     //the following function moves the cursor to (4, 5) and then
-     //writes a string.  It is equivalent to the following two stmts:
-     move(4, 5);
-     addstr("Type in a non-blank character, after it is echoed ");
-     mvaddstr(4, 5, "Type in a couple of non-blank characters ");
-     addstr("and then wait and watch!");
-     refresh();
-
-     for(int i = 1; i < 15; i++) {
-	  mvaddch( i + 5, i + 20, getChar() );
-	  refresh();
-     }	  
-     terminate();
+    terminate();
 }
+
+
+void drawPlayArea( int row, int col ){
+
+  for (int i = 2; i < row; i++) {
+    move(i, 0);
+    for (int j = 0; j < col; j++) {
+        if (i == 2 || i == row - 1 ||  j == col - 1 || j == 0) {
+          move(i, j);
+          addstr("*");
+        }
+    }
+  }
+
+}
+
 
 void startup( void )
 {
