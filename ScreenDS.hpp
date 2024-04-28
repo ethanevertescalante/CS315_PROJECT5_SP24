@@ -13,25 +13,33 @@ class ScreenDS {
 
 public:
     // functions
-    ScreenDS();
-    void mkFree();
-    bool isFree();
+    ScreenDS(int row, int col);
+    void mkFree(int row, int col);
+    bool isFree(int row, int col);
+    void mkOccupied(int row, int col);
     void getARandomCell();
-
+    int sizeOfFreepool();
+    std::vector< std::vector<int> > screen;
     /*
     mkFree  -- given a cell, make it to be a free cell
-            mkOccupied -- given a free cell, make it so that it no longer is free, it is a cell
-            that belongs to the worm
+    mkOccupied -- given a free cell, make it so that it no longer is free, it is a cell that belongs to the worm
     isFree -- given a cell, determine if it is free or not
     getARandomCell -- randomly selects and returns a free cell to represents a munchie
     */
 private:
+    //helper functions
+    void mkFreeHelper(int row, int col, int* indexOfFreepool);
+
+
+
     // freepool (a 1D vector) and screen (a 2D vector)
     // initialize the internal representation of the screen in the constructor
-    std::vector< std::vector<int> > screen;
-    std::vector< std::vector< std::vector<int> > > freepool;
-    int row;
-    int col;
+
+    std::vector<int> freepool;
+    int rows;
+    int cols;
+    int lastIndexOfFreepool;
+
 
 
 };

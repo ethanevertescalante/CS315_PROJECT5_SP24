@@ -51,7 +51,8 @@ int main(int argc, const char *argv[])
     }
 
 
-    ScreenDS SDS;
+    ScreenDS SDS(row, col);
+
     startup();
 
     move(0,0);
@@ -61,12 +62,31 @@ int main(int argc, const char *argv[])
     addstr("Score: ");
     drawPlayArea(row, col);
 
+    for (int i = 2; i < row; i++) {
+        move(i, 0);
+        for (int j = 0; j < col; j++) {
+            move(i, j);
+            if(SDS.isFree(i, j)){
+                SDS.mkFree(i,j);
+                addstr("1");
+            }else{
+                SDS.mkOccupied(i, j);
+                addstr("0");
+            }
+
+
+        }
+    }
+
+
     for (int i = 1; i < 5; i++) {
         getChar();
         refresh();
     }
 
     terminate();
+    //std::cout << SDS.screen[3][1] << std::endl;
+
 }
 
 
