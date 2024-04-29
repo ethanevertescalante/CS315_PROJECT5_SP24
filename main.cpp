@@ -112,10 +112,12 @@ int main(int argc, const char *argv[])
     bool isWormAlive = true;
     int nextRow = centerRow;
     int nextCol = centerCol;
-    //driving code loop
+
 
     std::pair<int, int> temp = SDS.getARandomCell();
     int nextMunchie = getNextMunchie(temp,SDS);
+
+    //driving code loop
     while(isWormAlive){
 
         char c  = getChar();
@@ -124,6 +126,7 @@ int main(int argc, const char *argv[])
         addstr(" ");
         //refresh();
 
+        //legal inputs
         if(getChar() == 'w' || c == 'k'){
             nextRow--;
         }else if(c == 's' || c == 'j'){
@@ -135,6 +138,9 @@ int main(int argc, const char *argv[])
         }
 
         //std::cout << "[" << nextRow << "," << nextCol << "]\n";
+
+        //snake is on top of munchie
+        //TODO:: need to implement the queue and keep track of where the head and tail are
         if((nextRow == temp.first) && (nextCol == temp.second)){
             updateScore(score, nextMunchie);
             temp = SDS.getARandomCell();
@@ -142,32 +148,24 @@ int main(int argc, const char *argv[])
 
         }
 
+        //check if snake is still alive
         if(!(SDS.isFree(nextRow, nextCol)) ){
             isWormAlive = false;
         }else{
+            //move @ and refresh screen to mimic movement
             move(nextRow, nextCol);
             addstr("@");
-
-
-
         }
 
-    /*
-        move(centerRow, centerCol);
-        if(SDS.isFree(centerRow, centerCol)){
-            SDS.mkOccupied(centerRow, centerRow);
-            addstr("@");
-        }else{
-            isWormAlive = false;
-        }
-*/
         refresh();
 
     }
 
     terminate();
+
+
     std::cout << "The worm crashed into something and DIED!!\n";
-    std::cout << "Final Score: " << score;
+    std::cout << "Final Score: " << score << std::endl;
 /*
     //testing
     for (int i = 2; i < row + 2; i++) {
@@ -188,13 +186,13 @@ int main(int argc, const char *argv[])
 
 void drawPlayArea( int row, int col, ScreenDS SDS ){
 
+  //draw and set free and occupied cells
   for (int i = 2; i < row + 2; i++) {
     move(i, 0);
     for (int j = 0; j < col; j++) {
         if (i == 2 || i == row + 1 || j == col - 1 || j == 0) {
             move(i, j);
             SDS.mkOccupied(i, j);
-
             addstr("*");
         }else{
             SDS.mkFree(i, j);
