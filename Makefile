@@ -15,4 +15,4 @@ Worm.o: Worm.cpp
 	g++ -c -ggdb Worm.cpp -o Worm.o
 
 clean:
-	/bin/rm -f game.x main.o getChar.o ScreenDS.o screen.o *~
+	/bin/rm -f game.x main.o getChar.o ScreenDS.o screen.o Worm.o *~
