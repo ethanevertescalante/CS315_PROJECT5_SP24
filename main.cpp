@@ -2,10 +2,14 @@
 #include<iostream>
 #include "getChar.hpp"
 #include "ScreenDS.hpp"
+#include "Worm.hpp"
 
 void startup( void );
 void terminate( void );
-void drawPlayArea( int row, int col );
+void drawPlayArea( int row, int col, ScreenDS SDS );
+void handleMovement( char c );
+int getNextMunchie(std::pair<int, int>,ScreenDS SDS);
+void updateScore(int& score1, int score2);
 
 int main(int argc, const char *argv[])
 {
@@ -50,56 +54,153 @@ int main(int argc, const char *argv[])
       exit(2);
     }
 
-
+    Worm worm(row, col);
     ScreenDS SDS(row, col);
+
+
+    int centerRow = (row+2)/2;
+    int centerCol = col/2;
+    int score = 0;
+
 
     startup();
 
     move(0,0);
     addstr("Ethan Snake Game CS315 SP24");
 
+
+
     move(1, 0);
     addstr("Score: ");
-    drawPlayArea(row, col);
 
-    for (int i = 2; i < row; i++) {
+    std::string scoreString = std::to_string(score);
+    char const *scoreScreen = scoreString.c_str();
+    move(1, 8);
+    addstr(scoreScreen);
+    drawPlayArea(row, col, SDS);
+
+/*
+    for (int i = 2; i < row + 2; i++) {
         move(i, 0);
         for (int j = 0; j < col; j++) {
             move(i, j);
-            if(SDS.isFree(i, j)){
-                SDS.mkFree(i,j);
-                addstr("1");
-            }else{
+            if (SDS.isFree(i, j)) {
+                SDS.mkFree(i, j);
+                //addstr("1");
+            } else{
                 SDS.mkOccupied(i, j);
-                addstr("0");
+                //addstr("0");
             }
+        }
+    }
+*/
+    //worm testing: starting position
+    worm.addHead(centerRow, centerCol);
+    move(centerRow, centerCol);
+    SDS.mkOccupied(centerRow, centerCol);
+    addch('@');
+/*
+    std::pair<int, int> temp = SDS.getARandomCell();
+
+    //munchie infomation
+    int munchInt = SDS.getMunchie();
+    std::string munchString = std::to_string(munchInt);
+    char const *munchScreen = munchString.c_str();
+    move(temp.first,temp.second);
+    addstr(munchScreen);
+*/
+    bool isWormAlive = true;
+    int nextRow = centerRow;
+    int nextCol = centerCol;
+    //driving code loop
+
+    std::pair<int, int> temp = SDS.getARandomCell();
+    int nextMunchie = getNextMunchie(temp,SDS);
+    while(isWormAlive){
+
+        char c  = getChar();
+
+        move(nextRow, nextCol);
+        addstr(" ");
+        //refresh();
+
+        if(getChar() == 'w' || c == 'k'){
+            nextRow--;
+        }else if(c == 's' || c == 'j'){
+            nextRow++;
+        }else if(c == 'a' || c == 'h'){
+            nextCol--;
+        }else if(c == 'd' || c == 'l'){
+            nextCol++;
+        }
+
+        //std::cout << "[" << nextRow << "," << nextCol << "]\n";
+        if((nextRow == temp.first) && (nextCol == temp.second)){
+            updateScore(score, nextMunchie);
+            temp = SDS.getARandomCell();
+            nextMunchie = getNextMunchie(temp, SDS);
+
+        }
+
+        if(!(SDS.isFree(nextRow, nextCol)) ){
+            isWormAlive = false;
+        }else{
+            move(nextRow, nextCol);
+            addstr("@");
+
 
 
         }
-    }
 
-
-    for (int i = 1; i < 5; i++) {
-        getChar();
+    /*
+        move(centerRow, centerCol);
+        if(SDS.isFree(centerRow, centerCol)){
+            SDS.mkOccupied(centerRow, centerRow);
+            addstr("@");
+        }else{
+            isWormAlive = false;
+        }
+*/
         refresh();
+
     }
 
     terminate();
-    //std::cout << SDS.screen[3][1] << std::endl;
+    std::cout << "The worm crashed into something and DIED!!\n";
+    std::cout << "Final Score: " << score;
+/*
+    //testing
+    for (int i = 2; i < row + 2; i++) {
+        for (int j = 0; j < col; j++) {
+                std::cout << SDS.screen[i][j] << ' ';
 
+        }
+        std::cout << std::endl;
+    }
+
+    std::cout << SDS.sizeOfFreepool() << std::endl;
+    std::cout << temp.first << ' ' << temp.second  <<std::endl;
+    std::cout << munchInt << std::endl;
+
+*/
 }
 
 
-void drawPlayArea( int row, int col ){
+void drawPlayArea( int row, int col, ScreenDS SDS ){
 
-  for (int i = 2; i < row; i++) {
+  for (int i = 2; i < row + 2; i++) {
     move(i, 0);
     for (int j = 0; j < col; j++) {
-        if (i == 2 || i == row - 1 ||  j == col - 1 || j == 0) {
-          move(i, j);
-          addstr("*");
+        if (i == 2 || i == row + 1 || j == col - 1 || j == 0) {
+            move(i, j);
+            SDS.mkOccupied(i, j);
+
+            addstr("*");
+        }else{
+            SDS.mkFree(i, j);
         }
     }
+
   }
 
 }
@@ -121,4 +222,26 @@ void terminate( void )
      clear();
      refresh();
      endwin();
+}
+
+int getNextMunchie(std::pair<int, int> temp, ScreenDS SDS){
+    int munchInt = SDS.getMunchie();
+
+    std::string munchString = std::to_string(munchInt);
+    char const *munchScreen = munchString.c_str();
+
+    move(temp.first,temp.second);
+    addstr(munchScreen);
+
+    return munchInt;
+
+}
+
+void updateScore(int& score1,int score2){
+    score1+=score2;
+    std::string scoreString = std::to_string(score1);
+    char const *scoreScreen = scoreString.c_str();
+    move(1, 8);
+    addstr(scoreScreen);
+
 }

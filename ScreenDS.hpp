@@ -17,9 +17,11 @@ public:
     void mkFree(int row, int col);
     bool isFree(int row, int col);
     void mkOccupied(int row, int col);
-    void getARandomCell();
+    std::pair<int, int> getARandomCell();
     int sizeOfFreepool();
+    int getMunchie();
     std::vector< std::vector<int> > screen;
+    std::vector<int> freepool;
     /*
     mkFree  -- given a cell, make it to be a free cell
     mkOccupied -- given a free cell, make it so that it no longer is free, it is a cell that belongs to the worm
@@ -35,7 +37,7 @@ private:
     // freepool (a 1D vector) and screen (a 2D vector)
     // initialize the internal representation of the screen in the constructor
 
-    std::vector<int> freepool;
+
     int rows;
     int cols;
     int lastIndexOfFreepool;
