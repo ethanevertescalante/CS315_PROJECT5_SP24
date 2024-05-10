@@ -1,6 +1,6 @@
 
-game.x:  main.o getChar.o ScreenDS.o Worm.o
-	g++ -ggdb -o game.x main.o getChar.o ScreenDS.o Worm.o -lcurses -ltermcap
+worm.x:  main.o getChar.o ScreenDS.o Worm.o
+	g++ -ggdb -o worm.x main.o getChar.o ScreenDS.o Worm.o -lcurses -ltermcap
 
 main.o: main.cpp
 	g++ -c -ggdb main.cpp -o main.o

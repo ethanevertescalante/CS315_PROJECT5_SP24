@@ -15,13 +15,15 @@ class Worm {
     tail // return the cell that represents the tail element of the queue
     */
 public:
-    Worm(int row, int col);
+    Worm(int rowC, int colC);
     void addHead(int row, int col);
     void removeTail();
-    void head();
-    void tail();
+    std::pair<int,int> head();
+    std::pair<int,int> tail();
     int numElementsInQueue();
-
+    Worm nextHeadPosition(char c);
+    std::queue< std::pair<int, int> > wormQueue;
+    std::vector< std::pair<int, int> > wormCircularQueue;
 
 
 
@@ -29,9 +31,17 @@ public:
     // Once you finish your project,
     // change the implementation to a circular queue.
 private:
-    std::queue< std::pair<int, int> > wormQueue;
+
     int rows;
     int cols;
+
+    int maxSize;
+    int headIndex;
+    int tailIndex;
+
+
+
+
 
 
 };

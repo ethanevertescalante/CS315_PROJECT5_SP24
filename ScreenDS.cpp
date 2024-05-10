@@ -5,26 +5,38 @@
 #include <ctime>
 #include "ScreenDS.hpp"
 
-ScreenDS::ScreenDS(int row, int col):rows(row), cols(col),screen(row*col,std::vector<int>(col*row,0)), freepool(row*col, 0), lastIndexOfFreepool(0){}
+ScreenDS::ScreenDS(int row, int col):rows(row), cols(col),screen(row*col,std::vector<int>(col*row,0)), freepool(row*col,std::make_pair(0,0)), lastIndexOfFreepool(0){
+
+
+}
 
 int ScreenDS::sizeOfFreepool() {
     return lastIndexOfFreepool;
 }
 
 bool ScreenDS::isFree(int row, int col){
-    return mvinch(row, col) != '*' && mvinch(row, col) != 'o';
+    return screen[row][col] != -1 && mvinch(row, col) != '*' ;
 }
 
 void ScreenDS::mkFree(int row, int col) {
     screen[row][col] = lastIndexOfFreepool;
-    freepool[lastIndexOfFreepool] = screen[row][col];
+    freepool[lastIndexOfFreepool] = std::make_pair(row,col);
     lastIndexOfFreepool++;
 
+
+
+}
+
+void ScreenDS::updateFreepool(int row, int col){
+    screen[row][col] = lastIndexOfFreepool; //screen gets number associated
+    freepool[lastIndexOfFreepool] = std::make_pair(row,col); //last index of freepool gets updated
+    lastIndexOfFreepool++;
 
 }
 
 void ScreenDS::mkOccupied(int row, int col) {
     screen[row][col] = -1;
+
 }
 
 std::pair<int, int> ScreenDS::getARandomCell() {
@@ -38,6 +50,10 @@ std::pair<int, int> ScreenDS::getARandomCell() {
 
     int newRow = minRow + rand() % (upRow - minRow + 1);
     int newCol = minCol + rand() % (upCol - minCol + 1);
+
+    if(!isFree(newRow, newCol)){
+        getARandomCell();
+    }
 
     return std::make_pair(newRow, newCol);
 

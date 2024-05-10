@@ -16,12 +16,13 @@ public:
     ScreenDS(int row, int col);
     void mkFree(int row, int col);
     bool isFree(int row, int col);
+    void updateFreepool(int row, int col);
     void mkOccupied(int row, int col);
     std::pair<int, int> getARandomCell();
     int sizeOfFreepool();
     int getMunchie();
     std::vector< std::vector<int> > screen;
-    std::vector<int> freepool;
+    std::vector< std::pair<int,int> > freepool;
     /*
     mkFree  -- given a cell, make it to be a free cell
     mkOccupied -- given a free cell, make it so that it no longer is free, it is a cell that belongs to the worm
@@ -41,6 +42,7 @@ private:
     int rows;
     int cols;
     int lastIndexOfFreepool;
+    int index;
 
 
 
