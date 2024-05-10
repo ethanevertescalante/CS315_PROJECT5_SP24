@@ -165,6 +165,7 @@ int main(int argc, const char *argv[])
         if (addTails) {
             move(prevRow, prevCol);
             SDS.mkOccupied(prevRow, prevCol);
+            //SDS.updateFreepool(prevRow, prevCol);
             worm.addHead(prevRow, prevCol);
             addstr("o");
             tailCounter++;
@@ -211,7 +212,7 @@ int main(int argc, const char *argv[])
             //enqueue
             move(nextRow, nextCol);
             SDS.mkOccupied(nextRow, nextCol);
-            SDS.updateFreepool(nextRow, nextCol);
+            //SDS.updateFreepool(nextRow, nextCol);
             worm.addHead(nextRow, nextCol);
             move(nextRow, nextCol);
             addstr("@");
@@ -219,6 +220,7 @@ int main(int argc, const char *argv[])
             if (worm.numElementsInQueue() != 1) {
                 move(prevRow, prevCol);
                 SDS.mkOccupied(prevRow, prevCol);
+                //SDS.updateFreepool(prevRow, prevCol);
                 addstr("o");
             }
 
@@ -241,7 +243,7 @@ int main(int argc, const char *argv[])
 
     terminate();
 
-    bool debug = true;
+    bool debug = false;
  if(debug) {
      //debug values
      std::cout << "\n";

@@ -28,9 +28,9 @@ void ScreenDS::mkFree(int row, int col) {
 }
 
 void ScreenDS::updateFreepool(int row, int col){
-    screen[row][col] = lastIndexOfFreepool; //screen gets number associated
-    freepool[lastIndexOfFreepool] = std::make_pair(row,col); //last index of freepool gets updated
-    lastIndexOfFreepool++;
+
+    freepool.at(screen[row][col]) = freepool[lastIndexOfFreepool];
+    //lastIndexOfFreepool--;
 
 }
 
